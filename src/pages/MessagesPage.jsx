@@ -31,14 +31,14 @@ export default function MessagesPage() {
   const listRef = useRef(null)
   const inputRef = useRef(null)
 
-  const loc = locations.find((l) => l.id === id)
+  const loc = locations.find((l) => l.id === id || l.slug === id)
 
   useEffect(() => {
     if (!loc) return
     const cutoff = Timestamp.fromMillis(Date.now() - 24 * 60 * 60 * 1000)
     const q = query(
       collection(db, 'messages'),
-      where('locationId', '==', id),
+      where('locationId', '==', loc.id),
       where('timestamp', '>', cutoff),
       orderBy('timestamp', 'asc'),
     )
@@ -70,7 +70,7 @@ export default function MessagesPage() {
       await addDoc(collection(db, 'messages'), {
         text,
         nickname: nickname.trim(),
-        locationId: id,
+        locationId: loc.id,
         timestamp: serverTimestamp(),
       })
     } catch (err) {

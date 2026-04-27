@@ -3,6 +3,7 @@
 export const locations = [
   {
     id: 'banana-corner',
+    slug: 'banana',
     emoji: '🍌',
     name: 'Banana Zone',
     room: 'Stairs',
@@ -11,6 +12,7 @@ export const locations = [
   },
   {
     id: 'grape-hall',
+    slug: 'grape',
     emoji: '🍇',
     name: 'Grape Zone',
     room: 'Agora Exhibition Hall',
@@ -19,6 +21,7 @@ export const locations = [
   },
   {
     id: 'lemon-lab',
+    slug: 'lemon',
     emoji: '🍋',
     name: 'Lemon Zone',
     room: 'WC',
@@ -27,6 +30,7 @@ export const locations = [
   },
   {
     id: 'berry-edge',
+    slug: 'berry',
     emoji: '🍓',
     name: 'Berry Zone',
     room: 'Cafe Bar',
@@ -35,6 +39,7 @@ export const locations = [
   },
   {
     id: 'orange-lounge',
+    slug: 'orange',
     emoji: '🍊',
     name: 'Orange Zone',
     room: 'Terrace',

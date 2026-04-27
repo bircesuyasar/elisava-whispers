@@ -17,6 +17,7 @@ export default function QrScanner({ onScan, onClose }) {
       { facingMode: 'environment' },
       { fps: 12, qrbox: { width: 220, height: 220 } },
       (text) => {
+        console.log('[QrScanner] raw scan:', JSON.stringify(text))
         scanner.stop().catch(() => {}).finally(() => onScanRef.current(text))
       },
       () => {},

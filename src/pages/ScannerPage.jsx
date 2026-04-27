@@ -5,24 +5,16 @@ import { useDiscovered } from '../hooks/useDiscovered'
 import QrScanner from '../components/QrScanner'
 import styles from './ScannerPage.module.css'
 
-function extractLocationId(text) {
-  // Pull the last path segment from a URL, or use the raw text
+function extractLocation(text) {
   const urlMatch = text.match(/\/location\/([^/?#\s]+)/)
   const segment = (urlMatch ? urlMatch[1] : text).trim()
 
-  // 1. Exact match against location id
-  const exact = locations.find((l) => l.id === segment)
-  if (exact) return exact.id
-
-  // 2. Prefix match: "banana" → "banana-corner"
-  const prefix = locations.find((l) => l.id.startsWith(segment))
-  if (prefix) return prefix.id
-
-  // 3. Reverse prefix: full id embedded in a longer QR string
-  const reverse = locations.find((l) => segment.startsWith(l.id))
-  if (reverse) return reverse.id
-
-  return null
+  return (
+    locations.find((l) => l.slug === segment) ||
+    locations.find((l) => l.id === segment) ||
+    locations.find((l) => l.id.startsWith(segment)) ||
+    null
+  )
 }
 
 export default function ScannerPage() {
@@ -50,10 +42,11 @@ export default function ScannerPage() {
 
   function handleScan(text) {
     setScanning(false)
-    const id = extractLocationId(text)
-    if (id) {
-      discover(id)
-      navigate(`/location/${id}`)
+    const loc = extractLocation(text)
+    console.log('[handleScan] text:', JSON.stringify(text), '→ loc:', loc?.id ?? null)
+    if (loc) {
+      discover(loc.id)
+      navigate(`/location/${loc.slug}`)
     } else {
       setScanError(true)
     }
