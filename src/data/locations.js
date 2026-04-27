@@ -6,7 +6,7 @@ export const locations = [
     emoji: '🍌',
     name: 'Banana Zone',
     room: 'Stairs',
-    hint: 'Where paths converge and stories begin.',
+    riddle: 'Not a room, not a corridor — just a decision',
     pin: { x: 27, y: 35 },
   },
   {
@@ -14,7 +14,7 @@ export const locations = [
     emoji: '🍇',
     name: 'Grape Zone',
     room: 'Agora Exhibition Hall',
-    hint: 'A cluster of minds, sharing the vine.',
+    riddle: 'Where the work finally leaves the studio',
     pin: { x: 27, y: 57 },
   },
   {
@@ -22,7 +22,7 @@ export const locations = [
     emoji: '🍋',
     name: 'Lemon Zone',
     room: 'WC',
-    hint: 'Sharp ideas squeezed into form.',
+    riddle: "You'll find it when you need it the most",
     pin: { x: 18, y: 18 },
   },
   {
@@ -30,7 +30,7 @@ export const locations = [
     emoji: '🍓',
     name: 'Berry Zone',
     room: 'Cafe Bar',
-    hint: 'At the edge where inside meets outside.',
+    riddle: 'Follow the smell of coffee',
     pin: { x: 63, y: 88 },
   },
   {
@@ -38,7 +38,7 @@ export const locations = [
     emoji: '🍊',
     name: 'Orange Zone',
     room: 'Terrace',
-    hint: 'Warm light, low voices, slow time.',
+    riddle: "Step outside, you've been inside too long",
     pin: { x: 42, y: 72 },
   },
 ]
