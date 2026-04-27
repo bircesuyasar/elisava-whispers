@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import {
+  collection, query, where, orderBy,
+  onSnapshot, addDoc, serverTimestamp, Timestamp,
+} from 'firebase/firestore'
+import { db } from '../firebase'
 import { locations } from '../data/locations'
-import { useMessages } from '../context/MessagesContext'
 import styles from './MessagesPage.module.css'
 
 function timeAgo(ts) {
@@ -13,36 +17,69 @@ function timeAgo(ts) {
   if (diff < hr) return `${Math.floor(diff / min)} min ago`
   if (diff < 2 * hr) return '1 hour ago'
   if (diff < day) return `${Math.floor(diff / hr)} hours ago`
-  if (diff < 2 * day) return 'yesterday'
-  return `${Math.floor(diff / day)} days ago`
+  return 'yesterday'
 }
 
 export default function MessagesPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { messages, addMessage } = useMessages()
+  const [messages, setMessages] = useState([])
   const [draft, setDraft] = useState('')
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState(null)
   const listRef = useRef(null)
   const inputRef = useRef(null)
 
   const loc = locations.find((l) => l.id === id)
-  const thread = messages[id] ?? []
+
+  useEffect(() => {
+    if (!loc) return
+    const cutoff = Timestamp.fromMillis(Date.now() - 24 * 60 * 60 * 1000)
+    const q = query(
+      collection(db, 'messages'),
+      where('locationId', '==', id),
+      where('timestamp', '>', cutoff),
+      orderBy('timestamp', 'asc'),
+    )
+    const unsub = onSnapshot(q, (snap) => {
+      setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+      setError(null)
+    }, (err) => {
+      // Firestore will log a console link to create the required composite index
+      console.error(err)
+      setError('Could not load messages.')
+    })
+    return unsub
+  }, [id, loc])
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
-  }, [thread.length])
+  }, [messages.length])
 
   if (!loc) {
     navigate('/scanner', { replace: true })
     return null
   }
 
-  function handleSend() {
+  async function handleSend() {
     const text = draft.trim()
-    if (!text) return
-    addMessage(id, text)
+    if (!text || sending) return
+    setSending(true)
     setDraft('')
-    inputRef.current?.focus()
+    try {
+      await addDoc(collection(db, 'messages'), {
+        text,
+        locationId: id,
+        timestamp: serverTimestamp(),
+      })
+    } catch (err) {
+      console.error(err)
+      setError('Failed to send. Try again.')
+      setDraft(text)
+    } finally {
+      setSending(false)
+      inputRef.current?.focus()
+    }
   }
 
   function handleKey(e) {
@@ -66,15 +103,18 @@ export default function MessagesPage() {
       </header>
 
       <ul className={styles.list} ref={listRef}>
-        {thread.map((msg) => (
-          <li key={msg.id} className={styles.card}>
-            <p className={styles.cardText}>{msg.text}</p>
-            <p className={styles.cardTime}>{timeAgo(msg.ts)}</p>
-          </li>
-        ))}
-        {thread.length === 0 && (
+        {error && <li className={styles.error}>{error}</li>}
+        {!error && messages.length === 0 && (
           <li className={styles.empty}>No whispers yet. Be the first.</li>
         )}
+        {messages.map((msg) => (
+          <li key={msg.id} className={styles.card}>
+            <p className={styles.cardText}>{msg.text}</p>
+            <p className={styles.cardTime}>
+              {msg.timestamp ? timeAgo(msg.timestamp.toMillis()) : 'just now'}
+            </p>
+          </li>
+        ))}
       </ul>
 
       <div className={styles.composer}>
@@ -86,11 +126,12 @@ export default function MessagesPage() {
           rows={1}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKey}
+          disabled={sending}
         />
         <button
           className={styles.sendBtn}
           onClick={handleSend}
-          disabled={!draft.trim()}
+          disabled={!draft.trim() || sending}
           aria-label="Send"
         >
           ↑

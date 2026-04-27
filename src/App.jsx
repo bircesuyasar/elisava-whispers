@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { MessagesProvider } from './context/MessagesContext'
 import BottomNav from './components/BottomNav'
 import ScannerPage from './pages/ScannerPage'
 import MapPage from './pages/MapPage'
@@ -23,9 +22,5 @@ function Shell() {
 }
 
 export default function App() {
-  return (
-    <MessagesProvider>
-      <Shell />
-    </MessagesProvider>
-  )
+  return <Shell />
 }
