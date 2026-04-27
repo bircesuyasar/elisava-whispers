@@ -6,13 +6,22 @@ import QrScanner from '../components/QrScanner'
 import styles from './ScannerPage.module.css'
 
 function extractLocationId(text) {
+  // Pull the last path segment from a URL, or use the raw text
   const urlMatch = text.match(/\/location\/([^/?#\s]+)/)
-  if (urlMatch) {
-    const id = urlMatch[1]
-    if (locations.find((l) => l.id === id)) return id
-  }
-  const direct = locations.find((l) => l.id === text.trim())
-  if (direct) return direct.id
+  const segment = (urlMatch ? urlMatch[1] : text).trim()
+
+  // 1. Exact match against location id
+  const exact = locations.find((l) => l.id === segment)
+  if (exact) return exact.id
+
+  // 2. Prefix match: "banana" → "banana-corner"
+  const prefix = locations.find((l) => l.id.startsWith(segment))
+  if (prefix) return prefix.id
+
+  // 3. Reverse prefix: full id embedded in a longer QR string
+  const reverse = locations.find((l) => segment.startsWith(l.id))
+  if (reverse) return reverse.id
+
   return null
 }
 
