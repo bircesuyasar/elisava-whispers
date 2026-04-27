@@ -25,6 +25,7 @@ export default function MessagesPage() {
   const navigate = useNavigate()
   const [messages, setMessages] = useState([])
   const [draft, setDraft] = useState('')
+  const [nickname, setNickname] = useState('')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState(null)
   const listRef = useRef(null)
@@ -45,7 +46,6 @@ export default function MessagesPage() {
       setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
       setError(null)
     }, (err) => {
-      // Firestore will log a console link to create the required composite index
       console.error(err)
       setError('Could not load messages.')
     })
@@ -69,6 +69,7 @@ export default function MessagesPage() {
     try {
       await addDoc(collection(db, 'messages'), {
         text,
+        nickname: nickname.trim(),
         locationId: id,
         timestamp: serverTimestamp(),
       })
@@ -110,32 +111,47 @@ export default function MessagesPage() {
         {messages.map((msg) => (
           <li key={msg.id} className={styles.card}>
             <p className={styles.cardText}>{msg.text}</p>
-            <p className={styles.cardTime}>
-              {msg.timestamp ? timeAgo(msg.timestamp.toMillis()) : 'just now'}
-            </p>
+            <div className={styles.cardMeta}>
+              <span className={styles.cardAuthor}>
+                {msg.nickname?.trim() || 'Anonymous'}
+              </span>
+              <span className={styles.cardTime}>
+                {msg.timestamp ? timeAgo(msg.timestamp.toMillis()) : 'just now'}
+              </span>
+            </div>
           </li>
         ))}
       </ul>
 
       <div className={styles.composer}>
-        <textarea
-          ref={inputRef}
-          className={styles.input}
-          placeholder="Leave a whisper…"
-          value={draft}
-          rows={1}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={handleKey}
+        <input
+          className={styles.nicknameInput}
+          placeholder="Your name (optional)"
+          value={nickname}
+          maxLength={40}
+          onChange={(e) => setNickname(e.target.value)}
           disabled={sending}
         />
-        <button
-          className={styles.sendBtn}
-          onClick={handleSend}
-          disabled={!draft.trim() || sending}
-          aria-label="Send"
-        >
-          ↑
-        </button>
+        <div className={styles.composerRow}>
+          <textarea
+            ref={inputRef}
+            className={styles.input}
+            placeholder="Leave a whisper…"
+            value={draft}
+            rows={1}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={handleKey}
+            disabled={sending}
+          />
+          <button
+            className={styles.sendBtn}
+            onClick={handleSend}
+            disabled={!draft.trim() || sending}
+            aria-label="Send"
+          >
+            ↑
+          </button>
+        </div>
       </div>
     </div>
   )

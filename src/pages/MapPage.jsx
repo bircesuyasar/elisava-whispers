@@ -48,12 +48,13 @@ export default function MapPage() {
           </button>
         ))}
 
-        {visiblePins.length === 0 && (
-          <div className={styles.emptyMap}>
-            <p>Scan QR codes to reveal locations</p>
-          </div>
-        )}
       </div>
+
+      {visiblePins.length === 0 && (
+        <div className={styles.emptyMap}>
+          <p>Scan QR codes to reveal locations</p>
+        </div>
+      )}
 
       {visiblePins.length > 0 && (
         <ul className={styles.legend}>

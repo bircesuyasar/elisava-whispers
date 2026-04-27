@@ -50,12 +50,10 @@
 
 /* ── Empty state ── */
 .emptyMap {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  padding: 20px 24px 0;
 }
 
 .emptyMap p {
