@@ -30,7 +30,8 @@
 /* ── Floor plan ── */
 .mapContainer {
   position: relative;
-  width: 100%;
+  width: calc(100% - 48px);
+  margin: 0 24px;
   /* Maintain the SVG's native aspect ratio: 1252 / 1368 */
   aspect-ratio: 1252 / 1368;
   flex-shrink: 0;
