@@ -1,0 +1,172 @@
+.page {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--nav-h);
+}
+
+.header {
+  padding: 52px 24px 20px;
+  flex-shrink: 0;
+}
+
+.subtitle {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: normal;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  font-family: 'Georgia', serif;
+}
+
+/* ── Floor plan ── */
+.mapContainer {
+  position: relative;
+  width: 100%;
+  /* Maintain the SVG's native aspect ratio: 1252 / 1368 */
+  aspect-ratio: 1252 / 1368;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.floorplan {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  /* Tint the plan to match the warm palette */
+  filter: sepia(0.12) brightness(0.97);
+}
+
+/* ── Pins ── */
+.pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  transition: transform 0.15s ease;
+}
+
+.pin:active {
+  transform: translate(-50%, -100%) scale(0.9);
+}
+
+.pinEmoji {
+  font-size: 26px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));
+  transition: filter 0.15s;
+}
+
+.pinActive .pinEmoji {
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,0.30));
+}
+
+/* Tooltip bubble */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 10px;
+  padding: 7px 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: popIn 0.18s ease;
+  z-index: 20;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--accent);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateX(-50%) scale(0.85); }
+  to   { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+.tooltipName {
+  font-family: 'Georgia', serif;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.tooltipRoom {
+  font-size: 10px;
+  opacity: 0.72;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
+/* ── Legend strip ── */
+.legend {
+  list-style: none;
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding: 16px 24px 0;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+.legend::-webkit-scrollbar {
+  display: none;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--surface);
+  border: 1.5px solid transparent;
+  border-radius: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.legendActive {
+  border-color: var(--accent);
+  background: var(--surface2);
+}
+
+.legendEmoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.legendName {
+  font-family: 'Georgia', serif;
+  font-size: 12px;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}

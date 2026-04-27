@@ -1,0 +1,136 @@
+.page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px calc(var(--nav-h) + 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.header {
+  padding-top: 52px;
+  text-align: left;
+}
+
+.subtitle {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: normal;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  font-family: 'Georgia', serif;
+}
+
+/* Camera */
+.cameraWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.cameraBtn {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cameraRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--surface2);
+  transition: border-color 0.2s;
+}
+
+.cameraBtn:active .cameraRing {
+  border-color: var(--accent);
+}
+
+.cameraInner {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: background 0.2s;
+}
+
+.cameraBtn:active .cameraInner {
+  background: var(--surface2);
+}
+
+.cameraHint {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* Shortcuts */
+.shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.shortcutsLabel {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pills {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1.5px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pill:active {
+  background: var(--surface2);
+}
+
+.pillEmoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.pillName {
+  font-family: 'Georgia', serif;
+  font-size: 15px;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
