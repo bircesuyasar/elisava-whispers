@@ -28,62 +28,6 @@
   font-family: 'Georgia', serif;
 }
 
-/* Camera */
-.cameraWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 8px 0;
-}
-
-.cameraBtn {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cameraRing {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1.5px solid var(--surface2);
-  transition: border-color 0.2s;
-}
-
-.cameraBtn:active .cameraRing {
-  border-color: var(--accent);
-}
-
-.cameraInner {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text);
-  transition: background 0.2s;
-}
-
-.cameraBtn:active .cameraInner {
-  background: var(--surface2);
-}
-
-.cameraHint {
-  font-size: 13px;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
-}
-
 /* Shortcuts */
 .shortcuts {
   display: flex;
@@ -132,13 +76,6 @@
   font-size: 15px;
   color: var(--text);
   letter-spacing: 0.01em;
-}
-
-.scanError {
-  font-size: 13px;
-  color: #b05a2a;
-  letter-spacing: 0.02em;
-  margin-top: -4px;
 }
 
 /* ── Riddle popup ── */
