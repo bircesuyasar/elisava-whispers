@@ -56,7 +56,7 @@ export default function ScannerPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <p className={styles.subtitle}>elisava whispers</p>
-        <h1 className={styles.title}>Grocery Store</h1>
+        <h1 className={styles.title}>Fruits</h1>
       </header>
 
       <div className={styles.shortcuts}>

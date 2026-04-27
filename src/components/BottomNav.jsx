@@ -6,7 +6,7 @@ export default function BottomNav() {
     <nav className={styles.nav}>
       <NavLink to="/scanner" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
         <span className={styles.icon}>◎</span>
-        <span className={styles.label}>Grocery Store</span>
+        <span className={styles.label}>Fruits</span>
       </NavLink>
       <NavLink to="/map" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
         <span className={styles.icon}>⊹</span>
