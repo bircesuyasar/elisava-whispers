@@ -1,13 +1,28 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { locations } from '../data/locations'
 import { useDiscovered } from '../hooks/useDiscovered'
+import BadgeScreen from '../components/BadgeScreen'
 import styles from './ScannerPage.module.css'
 
+const BADGE_KEY = 'elisava_badge_shown'
+
 export default function ScannerPage() {
-  const { discover } = useDiscovered()
+  const { discovered, discover } = useDiscovered()
   const [popupLoc, setPopupLoc] = useState(null)
   const [showScanPrompt, setShowScanPrompt] = useState(false)
+  const [showBadge, setShowBadge] = useState(false)
   const cameraRef = useRef(null)
+
+  useEffect(() => {
+    if (discovered.size >= locations.length && !localStorage.getItem(BADGE_KEY)) {
+      setShowBadge(true)
+    }
+  }, [discovered])
+
+  function dismissBadge() {
+    localStorage.setItem(BADGE_KEY, '1')
+    setShowBadge(false)
+  }
 
   function closePopup() {
     setPopupLoc(null)
@@ -102,6 +117,8 @@ export default function ScannerPage() {
           </div>
         </>
       )}
+
+      {showBadge && <BadgeScreen onDismiss={dismissBadge} />}
     </div>
   )
 }
