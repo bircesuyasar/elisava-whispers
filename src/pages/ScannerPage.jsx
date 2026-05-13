@@ -1,55 +1,21 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { locations } from '../data/locations'
 import { useDiscovered } from '../hooks/useDiscovered'
-import QrScanner from '../components/QrScanner'
 import styles from './ScannerPage.module.css'
 
-function extractLocation(text) {
-  const urlMatch = text.match(/\/location\/([^/?#\s]+)/)
-  const segment = (urlMatch ? urlMatch[1] : text).trim()
-
-  return (
-    locations.find((l) => l.slug === segment) ||
-    locations.find((l) => l.id === segment) ||
-    locations.find((l) => l.id.startsWith(segment)) ||
-    null
-  )
-}
-
 export default function ScannerPage() {
-  const navigate = useNavigate()
   const { discover } = useDiscovered()
   const [popupLoc, setPopupLoc] = useState(null)
-  const [scanning, setScanning] = useState(false)
-  const [scanError, setScanError] = useState(false)
-
-  function openPopup(loc) {
-    setPopupLoc(loc)
-    setScanError(false)
-  }
+  const [showScanPrompt, setShowScanPrompt] = useState(false)
 
   function closePopup() {
     setPopupLoc(null)
-    setScanError(false)
+    setShowScanPrompt(false)
   }
 
-  function startScan() {
-    setPopupLoc(null)
-    setScanError(false)
-    setScanning(true)
-  }
-
-  function handleScan(text) {
-    setScanning(false)
-    const loc = extractLocation(text)
-    console.log('[handleScan] text:', JSON.stringify(text), '→ loc:', loc?.id ?? null)
-    if (loc) {
-      discover(loc.id)
-      navigate(`/location/${loc.slug}`)
-    } else {
-      setScanError(true)
-    }
+  function handleFound() {
+    discover(popupLoc.id)
+    setShowScanPrompt(true)
   }
 
   return (
@@ -59,6 +25,11 @@ export default function ScannerPage() {
         <h1 className={styles.title}>Fruits</h1>
       </header>
 
+      <div className={styles.scanHint}>
+        <span className={styles.scanIcon}>📷</span>
+        <p className={styles.scanText}>Open your camera app to scan the QR code</p>
+      </div>
+
       <div className={styles.shortcuts}>
         <p className={styles.shortcutsLabel}>find a location</p>
         <div className={styles.pills}>
@@ -66,7 +37,7 @@ export default function ScannerPage() {
             <button
               key={loc.id}
               className={styles.pill}
-              onClick={() => openPopup(loc)}
+              onClick={() => { setPopupLoc(loc); setShowScanPrompt(false) }}
             >
               <span className={styles.pillEmoji}>{loc.emoji}</span>
               <span className={styles.pillName}>{loc.name}</span>
@@ -82,16 +53,20 @@ export default function ScannerPage() {
             <button className={styles.popupClose} onClick={closePopup} aria-label="Close">×</button>
             <span className={styles.popupEmoji}>{popupLoc.emoji}</span>
             <h2 className={styles.popupName}>{popupLoc.name}</h2>
-            <p className={styles.popupRiddle}>"{popupLoc.riddle}"</p>
-            <button className={styles.foundBtn} onClick={startScan}>
-              I found it!
-            </button>
+            {showScanPrompt ? (
+              <p className={styles.scanPrompt}>
+                Now scan the QR code with your phone camera to unlock whispers.
+              </p>
+            ) : (
+              <>
+                <p className={styles.popupRiddle}>"{popupLoc.riddle}"</p>
+                <button className={styles.foundBtn} onClick={handleFound}>
+                  I found it!
+                </button>
+              </>
+            )}
           </div>
         </>
-      )}
-
-      {scanning && (
-        <QrScanner onScan={handleScan} onClose={() => setScanning(false)} />
       )}
     </div>
   )
