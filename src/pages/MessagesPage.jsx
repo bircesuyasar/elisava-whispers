@@ -37,7 +37,7 @@ export default function MessagesPage() {
     if (!loc) return
     const cutoff = Timestamp.fromMillis(Date.now() - 24 * 60 * 60 * 1000)
     const q = query(
-      collection(db, 'messages'),
+      collection(db, 'whispers'),
       where('locationId', '==', loc.id),
       where('timestamp', '>', cutoff),
       orderBy('timestamp', 'asc'),
@@ -46,8 +46,8 @@ export default function MessagesPage() {
       setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
       setError(null)
     }, (err) => {
-      console.error(err)
-      setError('Could not load messages.')
+      console.error('Firestore onSnapshot error:', err.code, err.message, err)
+      setError(`Could not load messages. (${err.code ?? err.message})`)
     })
     return unsub
   }, [id, loc])
@@ -67,7 +67,7 @@ export default function MessagesPage() {
     setSending(true)
     setDraft('')
     try {
-      await addDoc(collection(db, 'messages'), {
+      await addDoc(collection(db, 'whispers'), {
         text,
         nickname: nickname.trim(),
         locationId: loc.id,
