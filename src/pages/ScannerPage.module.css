@@ -197,13 +197,18 @@
   opacity: 0.75;
 }
 
-.scanPrompt {
+.scanInstructIcon {
+  font-size: 52px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.scanInstructText {
   font-family: 'Georgia', serif;
-  font-size: 15px;
-  color: var(--text-muted);
-  font-style: italic;
+  font-size: 16px;
+  color: var(--text);
   text-align: center;
   line-height: 1.6;
-  margin: 8px 0 0;
+  margin: 0;
 }
 

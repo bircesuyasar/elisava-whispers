@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { locations } from '../data/locations'
 import { useDiscovered } from '../hooks/useDiscovered'
 import BadgeScreen from '../components/BadgeScreen'
@@ -11,7 +11,6 @@ export default function ScannerPage() {
   const [popupLoc, setPopupLoc] = useState(null)
   const [showScanPrompt, setShowScanPrompt] = useState(false)
   const [showBadge, setShowBadge] = useState(false)
-  const cameraRef = useRef(null)
 
   useEffect(() => {
     if (discovered.size >= locations.length && !localStorage.getItem(BADGE_KEY)) {
@@ -30,32 +29,7 @@ export default function ScannerPage() {
   }
 
   function handleFound() {
-    cameraRef.current.click()
-  }
-
-  async function handleCapture(e) {
-    const file = e.target.files?.[0]
-    e.target.value = ''
-    if (!file) return
-
-    if ('BarcodeDetector' in window) {
-      try {
-        const detector = new BarcodeDetector({ formats: ['qr_code'] })
-        const bitmap = await createImageBitmap(file)
-        const codes = await detector.detect(bitmap)
-        if (codes.length > 0) {
-          const val = codes[0].rawValue
-          const match = locations.find((l) => val.includes(l.id) || val.includes(l.slug))
-          discover(match?.id ?? popupLoc.id)
-        } else {
-          discover(popupLoc.id)
-        }
-      } catch {
-        discover(popupLoc.id)
-      }
-    } else {
-      discover(popupLoc.id)
-    }
+    discover(popupLoc.id)
     setShowScanPrompt(true)
   }
 
@@ -94,18 +68,13 @@ export default function ScannerPage() {
             <button className={styles.popupClose} onClick={closePopup} aria-label="Close">×</button>
             <span className={styles.popupEmoji}>{popupLoc.emoji}</span>
             <h2 className={styles.popupName}>{popupLoc.name}</h2>
-            <input
-              ref={cameraRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              style={{ display: 'none' }}
-              onChange={handleCapture}
-            />
             {showScanPrompt ? (
-              <p className={styles.scanPrompt}>
-                Now scan the QR code with your phone camera to unlock whispers.
-              </p>
+              <>
+                <span className={styles.scanInstructIcon}>📷</span>
+                <p className={styles.scanInstructText}>
+                  Open your phone's camera app and scan the QR code
+                </p>
+              </>
             ) : (
               <>
                 <p className={styles.popupRiddle}>"{popupLoc.riddle}"</p>
