@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { locations } from '../data/locations'
 import { useDiscovered } from '../hooks/useDiscovered'
 import styles from './MapPage.module.css'
@@ -7,6 +7,7 @@ export default function MapPage() {
   const { discovered } = useDiscovered()
   const [active, setActive] = useState(null)
   const [found, setFound] = useState(false)
+  const cameraRef = useRef(null)
 
   const visiblePins = locations.filter((l) => discovered.has(l.id))
   const activeLoc = locations.find((l) => l.id === active)
@@ -82,8 +83,16 @@ export default function MapPage() {
             <h2 className={styles.popupName}>{activeLoc.name}</h2>
             <p className={styles.popupRiddle}>"{activeLoc.riddle}"</p>
 
+            <input
+              ref={cameraRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              style={{ display: 'none' }}
+              onChange={() => setFound(true)}
+            />
             {!found ? (
-              <button className={styles.foundBtn} onClick={() => setFound(true)}>
+              <button className={styles.foundBtn} onClick={() => cameraRef.current.click()}>
                 I found it!
               </button>
             ) : (
