@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import {
   collection, query, where, orderBy,
   onSnapshot, addDoc, serverTimestamp, Timestamp,
@@ -56,10 +56,7 @@ export default function MessagesPage() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages.length])
 
-  if (!loc) {
-    navigate('/scanner', { replace: true })
-    return null
-  }
+  if (!loc) return <Navigate to="/scanner" replace />
 
   async function handleSend() {
     const text = draft.trim()
