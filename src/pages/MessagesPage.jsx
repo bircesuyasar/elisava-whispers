@@ -6,7 +6,11 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { locations } from '../data/locations'
+import { useDiscovered } from '../hooks/useDiscovered'
+import BadgeScreen from '../components/BadgeScreen'
 import styles from './MessagesPage.module.css'
+
+const BADGE_KEY = 'elisava_badge_shown'
 
 function timeAgo(ts) {
   const diff = Date.now() - ts
@@ -23,15 +27,32 @@ function timeAgo(ts) {
 export default function MessagesPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { discovered, discover } = useDiscovered()
   const [messages, setMessages] = useState([])
   const [draft, setDraft] = useState('')
   const [nickname, setNickname] = useState('')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState(null)
+  const [showBadge, setShowBadge] = useState(false)
   const listRef = useRef(null)
   const inputRef = useRef(null)
 
   const loc = locations.find((l) => l.id === id || l.slug === id)
+
+  useEffect(() => {
+    if (loc) discover(loc.id)
+  }, [loc?.id])
+
+  useEffect(() => {
+    if (discovered.size >= locations.length && !localStorage.getItem(BADGE_KEY)) {
+      setShowBadge(true)
+    }
+  }, [discovered])
+
+  function dismissBadge() {
+    localStorage.setItem(BADGE_KEY, '1')
+    setShowBadge(false)
+  }
 
   useEffect(() => {
     if (!loc) return
@@ -88,6 +109,7 @@ export default function MessagesPage() {
   }
 
   return (
+    <>
     <div className={styles.page}>
       <header className={styles.header}>
         <button className={styles.back} onClick={() => navigate(-1)} aria-label="Back">
@@ -151,5 +173,8 @@ export default function MessagesPage() {
         </div>
       </div>
     </div>
+
+    {showBadge && <BadgeScreen onDismiss={dismissBadge} />}
+  </>
   )
 }
